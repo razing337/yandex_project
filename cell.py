@@ -9,38 +9,44 @@ class Cell:
         self.walls = {'top': True, 'right': True, 'bottom': True, 'left': True}
         self.visited = False
 
-    # рисование стены
     def draw(self, sc, tile):
         x, y = self.x * tile, self.y * tile
-        if self.walls['top']:
-            pygame.draw.line(sc, pygame.Color('darkgreen'), (x, y), (x + tile, y), self.thickness)
-        if self.walls['right']:
-            pygame.draw.line(sc, pygame.Color('darkgreen'), (x + tile, y), (x + tile, y + tile), self.thickness)
-        if self.walls['bottom']:
-            pygame.draw.line(sc, pygame.Color('darkgreen'), (x + tile, y + tile), (x, y + tile), self.thickness)
-        if self.walls['left']:
-            pygame.draw.line(sc, pygame.Color('darkgreen'), (x, y + tile), (x, y), self.thickness)
+        for wall, is_present in self.walls.items():
+            if is_present:
+                if wall == 'top':
+                    start = (x, y)
+                    end = (x + tile, y)
+                elif wall == 'right':
+                    start = (x + tile, y)
+                    end = (x + tile, y + tile)
+                elif wall == 'bottom':
+                    start = (x + tile, y + tile)
+                    end = (x, y + tile)
+                else:  # left
+                    start = (x, y + tile)
+                    end = (x, y)
+                pygame.draw.line(sc, pygame.Color('darkgreen'), start, end, self.thickness)
 
-    # проверка стенок
+    def is_valid_cell(self, x, y, cols, rows):
+        return 0 <= x < cols and 0 <= y < rows
+
+    def get_cell_index(self, x, y, cols):
+        return x + y * cols
+
     def check_cell(self, x, y, cols, rows, grid_cells):
-        find_index = lambda x, y: x + y * cols
-        if x < 0 or x > cols - 1 or y < 0 or y > rows - 1:
+        if not self.is_valid_cell(x, y, cols, rows):
             return False
-        return grid_cells[find_index(x, y)]
+        return grid_cells[self.get_cell_index(x, y, cols)]
 
-    # проверка соседних стенок
-    def check_neighbors(self, cols, rows, grid_cells):
+    def get_neighbors(self, cols, rows, grid_cells):
         neighbors = []
-        top = self.check_cell(self.x, self.y - 1, cols, rows, grid_cells)
-        right = self.check_cell(self.x + 1, self.y, cols, rows, grid_cells)
-        bottom = self.check_cell(self.x, self.y + 1, cols, rows, grid_cells)
-        left = self.check_cell(self.x - 1, self.y, cols, rows, grid_cells)
-        if top and not top.visited:
-            neighbors.append(top)
-        if right and not right.visited:
-            neighbors.append(right)
-        if bottom and not bottom.visited:
-            neighbors.append(bottom)
-        if left and not left.visited:
-            neighbors.append(left)
+        potential_neighbors = [(self.x, self.y - 1), (self.x + 1, self.y), (self.x, self.y + 1), (self.x - 1, self.y)]
+        for nx, ny in potential_neighbors:
+            neighbor = self.check_cell(nx, ny, cols, rows, grid_cells)
+            if neighbor and not neighbor.visited:
+                neighbors.append(neighbor)
+        return neighbors
+
+    def choose_random_neighbor(self, cols, rows, grid_cells):
+        neighbors = self.get_neighbors(cols, rows, grid_cells)
         return choice(neighbors) if neighbors else False
