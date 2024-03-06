@@ -70,3 +70,4 @@ class Player:
         self.current_image = self.standing_image
         self.current_frame = 0
         self.is_running = False
+# добавил анимацию движения, добавил функцию, отслеживающую координаты героя, добавил спрайт для героя, вместо цветной точки и вцелом изменил методы реализации
