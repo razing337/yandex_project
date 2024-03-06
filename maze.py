@@ -48,3 +48,4 @@ class Maze:
         elif dy == -1:
             current.walls['bottom'] = False
             next.walls['top'] = False
+# изменил методы реализации генерации и проверки соседних клеток
