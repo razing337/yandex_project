@@ -35,3 +35,4 @@ class Clock:
 
     def stop_timer(self):
         self.start_time = None
+# изменил цвета и методы реализации
