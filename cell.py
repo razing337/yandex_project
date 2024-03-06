@@ -50,3 +50,8 @@ class Cell:
     def choose_random_neighbor(self, cols, rows, grid_cells):
         neighbors = self.get_neighbors(cols, rows, grid_cells)
         return choice(neighbors) if neighbors else False
+# 1. `is_valid_cell` проверяет, находится ли клетка в пределах сетки.
+# 2. `get_cell_index` вычисляет индекс клетки в одномерном массиве, представляющем сетку.
+# 3. `check_cell` проверяет, существует ли клетка в указанных координатах.
+# 4. `get_neighbors` получает все доступные, непосещенные соседние клетки.
+# 5. `choose_random_neighbor` выбирает случайную непосещенную клетку из соседей для дальнейшего перемещения.
